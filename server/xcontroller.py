@@ -1,3 +1,5 @@
+#not my work, it's from https://github.com/morowinder/xcontroller
+
 import pygame
 
 import subprocess
@@ -12,33 +14,6 @@ atexit.register(proc.kill)
 pygame.init()
 pygame.joystick.init()
 
-#controller	pc	
-#----------------------
-#l_t		r_x
-#r_t		l_t
-#r_x		r_y
-#r_y		r_t
-
-def get_count():
-  return pygame.joystick.get_count()
-
-def get_controller(x):
-  count = pygame.joystick.get_count()
-  if count == 0:
-    print("no joysticks connected")
-    return None
-  elif x < count:
-    return Xcontroller(pygame.joystick.Joystick(x), 0.12)
-  else:
-    print("Joystick " + str(x) + " not connected")
-    print("choose joystic from 0 to " + str(count -1))
-    return None  
-
-class Xcontroller:
-  def __init__(self, controller, deadzone):
-    self.controller = controller
-    self.controller.init()
-    self.deadzone = deadzone
 
   def axis_deadzone(self, x):
     if x < 0:
