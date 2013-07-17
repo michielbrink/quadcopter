@@ -1,6 +1,5 @@
 # python extensions
 *.pyc
-*.py~
 
 # C extensions
 *.so
@@ -36,3 +35,6 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+#gedit log
+*~
