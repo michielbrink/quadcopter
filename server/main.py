@@ -39,7 +39,7 @@ while 1:
     c0x02_list[2] = 65535 * data_list[4] / 100
     c0x02_list[3] = 65535 * data_list[4] / 100
 
-    m1 = stm_message(0x02, [struct.unpack("pack('>H', c0x02_list[0])[:1]"),struct.unpack("<L", "pack('>H', c0x02_list[0])[1:]"),struct.unpack("<L", "pack('>H', c0x02_list[1])[:1]"),struct.unpack("<L", "pack('>H', c0x02_list[1])[1:]"),struct.unpack("<L", "pack('>H', c0x02_list[2])[:1]"),struct.unpack("<L", "pack('>H', c0x02_list[2])[1:]"),struct.unpack("<L", "pack('>H', c0x02_list[3])[:1]"),struct.unpack("<L", "pack('>H', c0x02_list[3])[1:]"])
+    m1 = stm_message(0x02, [struct.unpack(pack('>H', c0x02_list[0])[:1]),struct.unpack("<L", pack('>H', c0x02_list[0])[1:]),struct.unpack("<L", pack('>H', c0x02_list[1])[:1]),struct.unpack("<L", pack('>H', c0x02_list[1])[1:]),struct.unpack("<L", pack('>H', c0x02_list[2])[:1]),struct.unpack("<L", pack('>H', c0x02_list[2])[1:]),struct.unpack("<L", pack('>H', c0x02_list[3])[:1]),struct.unpack("<L", pack('>H', c0x02_list[3])[1:]])
 
     resp = spi.xfer2(m1.get_message())
     print "resp = " + resp
