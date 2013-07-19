@@ -3,9 +3,9 @@
 
 import time
 import spidev
-import stm
 import socket
 from struct import *
+from stm import *
 
 #tcp
 TCP_IP = ''

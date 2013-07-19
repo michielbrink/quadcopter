@@ -3,7 +3,7 @@
 
 import socket, time, string
 
-TCP_IP = 'localhost'
+TCP_IP = 'vondel.is-a-chef.net'
 TCP_PORT = 5555
 BUFFER_SIZE = 1024
 
