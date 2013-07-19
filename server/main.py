@@ -33,7 +33,8 @@ while 1:
     print "data_string = " + data_string
 
     data_list = eval(data_string)
-    
+    print "data_list = " + str(data_list).translate(None, "'")
+    print "data_list[4] = " + str(data_list[4])
     c0x02_list[0] = 65535 * data_list[4] / 100
     c0x02_list[1] = 65535 * data_list[4] / 100
     c0x02_list[2] = 65535 * data_list[4] / 100
