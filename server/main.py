@@ -39,7 +39,7 @@ while 1:
     c0x02_list[2] = 65535 * data_list[4] / 100
     c0x02_list[3] = 65535 * data_list[4] / 100
 
-    m1 = stm_message(0x02, [c0x02_list[0]) >> 8, [c0x02_list[0] % 256), [c0x02_list[1]) >> 8, [c0x02_list[1] % 256), [c0x02_list[2]) >> 8, [c0x02_list[2]) % 256, [c0x02_list[3]) >> 8, [c0x02_list[3]) % 256)
+    m1 = stm_message(0x02, [c0x02_list[0]) >> 8, c0x02_list[0] % 256), c0x02_list[1]) >> 8, c0x02_list[1] % 256), c0x02_list[2]) >> 8, c0x02_list[2]) % 256, c0x02_list[3]) >> 8, c0x02_list[3]) % 256])
 
     resp = spi.xfer2(m1.get_message())
     print "resp = " + resp
