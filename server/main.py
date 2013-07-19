@@ -35,12 +35,15 @@ while 1:
     data_list = eval(data_string)
     print "data_list = " + str(data_list).translate(None, "'")
     print "data_list[4] = " + str(data_list[4])
+
     c0x02_list[0] = 65535 * data_list[4] / 100
     c0x02_list[1] = 65535 * data_list[4] / 100
     c0x02_list[2] = 65535 * data_list[4] / 100
     c0x02_list[3] = 65535 * data_list[4] / 100
-    print "65535 * data_list[4] = " + str(65535 * data_list[4])
+
     print "c0x02_list[0] (65535 * data_list[4] / 100) = " + str(c0x02_list[0])
+    print "c0x02_list[0] first 8 bit = " + str(c0x02_list[0] >> 8)
+    print "c0x02_list[0] second 8 bit = " + str(c0x02_list[0] % 256)
 
     m1 = stm_message(0x02, [c0x02_list[0] >> 8, c0x02_list[0] % 256, c0x02_list[1] >> 8, c0x02_list[1] % 256, c0x02_list[2] >> 8, c0x02_list[2] % 256, c0x02_list[3] >> 8, c0x02_list[3] % 256])
 
