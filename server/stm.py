@@ -54,7 +54,7 @@ class stm_device:
     # Expects, per motor, a percentage of the max
     def set_motors(self, speeds):
         tspeeds = [int(min(100, max(0, x))*(MAX_SPEED/100)) for x in speeds]
-        motors = [ord(x) for x in struct.pack('<HHHH', tspeeds[0], tspeeds[1], $
+        motors = [ord(x) for x in struct.pack('<HHHH', tspeeds[0], tspeeds[1], [1], tspeeds[2], tspeeds[3])]
         self._do_request(CMD_SET_MOTORS, motors)
 
     def calibrate_angle(self):
