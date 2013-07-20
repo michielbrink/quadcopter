@@ -4,11 +4,9 @@
 import time
 import socket
 import struct
-import spidev
-import stm
 import commands
-import clientconnect
 from stm import *
+from clientconnect import *
 import variables
 
 #connections
