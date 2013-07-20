@@ -4,7 +4,6 @@
 import time
 import struct
 import commands
-import socket
 import client
 from stm import *
 

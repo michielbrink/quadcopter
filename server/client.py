@@ -1,3 +1,4 @@
+import socket
 
 TCP_IP = ''
 TCP_PORT = 5555
