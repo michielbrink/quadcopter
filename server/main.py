@@ -2,13 +2,13 @@
 # http://louisthiery.com/spi-python-hardware-spi-for-raspi/
 
 import time
-import variables
 import socket
 import struct
 import spidev
 import stm
 import commands
 import clientconnect
+import variables
 #from stm import *
 
 #main
