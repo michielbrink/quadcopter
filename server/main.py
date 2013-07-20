@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # http://louisthiery.com/spi-python-hardware-spi-for-raspi/
 
+import variables
 import time
 import struct
 import commands
 from stm import *
 from clientconnect import *
-import variables
 
 #connections
 stm = stm_device()
