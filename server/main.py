@@ -8,7 +8,7 @@ import spidev
 import stm
 import commands
 import clientconnect
-#from stm import *
+from stm import *
 import variables
 
 #connections
