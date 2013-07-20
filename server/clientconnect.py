@@ -1,3 +1,8 @@
+#tcp
+TCP_IP = ''
+TCP_PORT = 5555
+BUFFER_SIZE = 1024
+
 class client_device:
     def __init__(self):
         import socket
