@@ -2,52 +2,32 @@
 # http://louisthiery.com/spi-python-hardware-spi-for-raspi/
 
 import time
-import spidev
+import variables
 import socket
-from struct import *
-from stm import *
-
-#tcp
-TCP_IP = ''
-TCP_PORT = 5555
-BUFFER_SIZE = 1024
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((TCP_IP, TCP_PORT))
-s.listen(1)
-
-conn, addr = s.accept()
-print 'Connection address:', addr
-
-#spi
-spi = spidev.SpiDev()
-spi.open(0,0)
-
-#motor
-c0x02_list = [0,0,0,0,0,0,0,0]
+import struct
+import spidev
+import stm
+import commands
+import clientconnect
+#from stm import *
 
 #main
 while 1:
-    data_string = conn.recv(BUFFER_SIZE)
-    #if not data_string: break
-    print "data_string = " + data_string
+    data_string = client.request()
 
     data_list = eval(data_string)
-    print "data_list = " + str(data_list).translate(None, "'")
-    print "data_list[4] = " + str(data_list[4])
+    debug("data_list", data_list)
 
-    c0x02_list[0] = 65535 * data_list[4] / 100
-    c0x02_list[1] = 65535 * data_list[4] / 100
-    c0x02_list[2] = 65535 * data_list[4] / 100
-    c0x02_list[3] = 65535 * data_list[4] / 100
+    motor[0] = data_list[4]
+    motor[1] = data_list[4]
+    motor[2] = data_list[4]
+    motor[3] = data_list[4]
 
-    print "c0x02_list[0] (65535 * data_list[4] / 100) = " + str(c0x02_list[0])
-    print "c0x02_list[0] first 8 bit = " + str(c0x02_list[0] >> 8)
-    print "c0x02_list[0] second 8 bit = " + str(c0x02_list[0] % 256)
+    debug("motor", motor)
 
-    m1 = stm_message(0x03, [c0x02_list[0] >> 8, c0x02_list[0] % 256, c0x02_list[1] >> 8, c0x02_list[1] % 256, c0x02_list[2] >> 8, c0x02_list[2] % 256, c0x02_list[3] >> 8, c0x02_list[3] % 256])
+    stm.set_motors([motor[0],motor[1],motor[2],motor[3]])
+    stm.set_leds(motor[0])
 
-    resp = spi.xfer2(m1.get_message())
-    print "resp = " + str(resp)
-    conn.send("accu = ... V")
+    print "angle = " + repr(stm.get_angle())
+
 conn.close()

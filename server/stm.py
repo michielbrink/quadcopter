@@ -1,4 +1,3 @@
-PAYLOAD_LENGTH = 8
 class stm_message:
     def __init__(self, command, payload):
         msg = []
@@ -28,28 +27,44 @@ class stm_response:
         return "<-- %02X : %s : %02X" % (
             self.msg[0],  ' '.join(["%02X" % x for x in self.msg[1:-2]]), self.msg[-1] )
 
+# Class to interact with the QuadCopter-STM in a more sane way
+class stm_device:
+    def __init__(self):
+        self.spi = spidev.SpiDev()
+        self.spi.open(0,0)
+        self.q = []
 
-"""
-# Voor motor-controls zijn het big-endian 16 bit integers
-print "Alle motorem uit:"
-m1 = stm_message(0x02, [0,0,0,0,0,0,0,0])
-resp = spi.xfer2(m1.get_message())
+    def _handle_response(self, resp):
+        if resp[0] != CMD_NOP:
+            self.q.append([x for x in resp])
 
-time.sleep(2)
+    def _do_request(self, cmd_code, payload = []):
+        m1 = stm_message(cmd_code, payload)
+        resp = self.spi.xfer2(m1.get_message())
+        self._handle_response(resp)
+    def __repr__(self):
+        return repr(self.q)
 
-print "Alle motorem aan:"
-m1 = stm_message(0x02, [200,0,200,0,200,0,200,0])
-resp = spi.xfer2(m1.get_message())
+    def nop(self):
+        self._do_request(CMD_NOP)
 
-time.sleep(3)
+    def set_leds(self, b):
+        self._do_request(CMD_SET_STM_LEDS, [b])
 
-print "Motor1 harder aan:"
-m1 = stm_message(0x02, [50,1,0,0,0,0,0,0])
-resp = spi.xfer2(m1.get_message())
+    # Expects, per motor, a percentage of the max
+    def set_motors(self, speeds):
+        tspeeds = [int(min(100, max(0, x))*(MAX_SPEED/100)) for x in speeds]
+        motors = [ord(x) for x in struct.pack('<HHHH', tspeeds[0], tspeeds[1], $
+        self._do_request(CMD_SET_MOTORS, motors)
 
-time.sleep(3)
+    def calibrate_angle(self):
+        self._do_request(CMD_CALIBRATE_ANGLE)
 
-print "Alle motorem weer uit:"
-m1 = stm_message(0x02, [0,0,0,0,0,0,0,0])
-resp = spi.xfer2(m1.get_message())
-"""
+    def get_angle(self):
+        self._do_request(CMD_GET_CUR_ANGLE)
+        while CMD_GET_CUR_ANGLE not in [x[0] for x in self.q]:
+            self.nop()
+        angles = [x for x in self.q if x[0] == CMD_GET_CUR_ANGLE][0]
+        return struct.unpack('<fff', ''.join([chr(x) for x in angles[1:13]]))
+
+
