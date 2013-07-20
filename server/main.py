@@ -33,9 +33,7 @@ def debug( debugvar, debugstring ):
 
 #main
 while 1:
-    data_string = conn.recv(BUFFER_SIZE)
-
-    data_list = eval(data_string)
+    data_list = [int(i) for i in conn.recv(BUFFER_SIZE).split(',')]
     debug("data_list", data_list)
 
     motor[0] = data_list[4]

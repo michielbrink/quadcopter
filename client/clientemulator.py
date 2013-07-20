@@ -13,7 +13,7 @@ s.connect((TCP_IP, TCP_PORT))
 time.sleep(0.1)
 
 while 1:
-    s.send("[0,0,0,0,0,0,0,0,0,0,0,0,0,0]")
+    s.send("0,0,0,0,0,0,0,0,0,0,0,0,0,0")
     data = s.recv(BUFFER_SIZE)
     time.sleep(10)
 
