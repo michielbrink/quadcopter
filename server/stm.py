@@ -1,3 +1,5 @@
+import struct
+
 PAYLOAD_LENGTH = 16
 MAX_SPEED = 750
 
