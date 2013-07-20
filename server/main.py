@@ -5,11 +5,12 @@ import time
 import socket
 import struct
 import spidev
-import stm
+#import stm
 import commands
 import clientconnect
+from stm import *
 import variables
-#from stm import *
+
 
 #main
 while 1:
