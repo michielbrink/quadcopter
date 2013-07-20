@@ -11,4 +11,4 @@ class client_device:
         conn, addr = s.accept()
 
     def _request(self):
-        conn.recv(BUFFER_SIZE)
+        return conn.recv(BUFFER_SIZE)
