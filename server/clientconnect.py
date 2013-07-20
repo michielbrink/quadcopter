@@ -1,14 +1,13 @@
-import socket
+
 TCP_IP = ''
 TCP_PORT = 5555
 BUFFER_SIZE = 1024
 
-class client_device:
-    def __init__(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind((TCP_IP, TCP_PORT))
-        s.listen(1)
-        conn, addr = s.accept()
+def tcp_connect():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((TCP_IP, TCP_PORT))
+    s.listen(1)
+    conn, addr = s.accept()
 
-    def request(self):
-        return conn.recv(BUFFER_SIZE)
+def tcp_request():
+    return conn.recv(BUFFER_SIZE)

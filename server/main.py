@@ -4,8 +4,9 @@
 import time
 import struct
 import commands
+import socket
+import clientconnect
 from stm import *
-from clientconnect import *
 
 #debug
 debug_option = 1
@@ -15,11 +16,11 @@ motor = [0,0,0,0]
 
 #connections
 stm = stm_device()
-client = client_device()
+tcp_connect()
 
 #main
 while 1:
-    data_string = client.request()
+    data_string = tcp_request()
 
     data_list = eval(data_string)
     debug("data_list", data_list)
