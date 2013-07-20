@@ -2,7 +2,6 @@
 # http://louisthiery.com/spi-python-hardware-spi-for-raspi/
 
 import time
-import socket
 import struct
 import commands
 from stm import *
