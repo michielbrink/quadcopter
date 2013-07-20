@@ -10,7 +10,10 @@ import commands
 import clientconnect
 #from stm import *
 import variables
+
+#connections
 stm = stm_device()
+client = client_device()
 
 #main
 while 1:

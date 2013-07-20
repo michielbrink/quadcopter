@@ -24,9 +24,5 @@ TCP_IP = ''
 TCP_PORT = 5555
 BUFFER_SIZE = 1024
 
-#connections
-
-client = client_device()
-
 #assign variables
 motor = [0,0,0,0]
