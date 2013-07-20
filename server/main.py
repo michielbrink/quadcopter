@@ -5,12 +5,12 @@ import time
 import socket
 import struct
 import spidev
-#import stm
+import stm
 import commands
 import clientconnect
-from stm import *
+#from stm import *
 import variables
-
+stm = stm_device()
 
 #main
 while 1:

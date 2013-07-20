@@ -25,7 +25,7 @@ TCP_PORT = 5555
 BUFFER_SIZE = 1024
 
 #connections
-stm = stm_device()
+
 client = client_device()
 
 #assign variables
