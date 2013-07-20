@@ -27,6 +27,11 @@ s.bind((TCP_IP, TCP_PORT))
 s.listen(1)
 conn, addr = s.accept()
 
+#debug
+def debug( debugvar, debugstring ):
+   if debug_option == 1:
+       print str(debugvar) + " = " + str(debugstring)
+
 #main
 while 1:
     data_string = conn.recv(BUFFER_SIZE)
