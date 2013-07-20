@@ -69,6 +69,7 @@ class stm_device:
         while CMD_GET_CUR_ANGLE not in [x[0] for x in self.q]:
             self.nop()
         angles = [x for x in self.q if x[0] == CMD_GET_CUR_ANGLE][0]
+        self.q = []
         return struct.unpack('<fff', ''.join([chr(x) for x in angles[1:13]]))
 
 
