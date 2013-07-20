@@ -31,19 +31,22 @@ def debug( debugvar, debugstring ):
    if debug_option == 1:
        print str(debugvar) + " = " + str(debugstring)
 
+#commands
+def motorrefresh():
+    motor[0] = data_list[4]
+    motor[1] = data_list[4]
+    motor[2] = data_list[4]
+    motor[3] = data_list[4]
+    debug("motor", motor)
+    stm.set_motors([motor[0],motor[1],motor[2],motor[3]])
+
 #main
 while 1:
     data_list = [int(i) for i in conn.recv(BUFFER_SIZE).split(',')]
     debug("data_list", data_list)
 
-    motor[0] = data_list[4]
-    motor[1] = data_list[4]
-    motor[2] = data_list[4]
-    motor[3] = data_list[4]
+    motorrefresh()
 
-    debug("motor", motor)
-
-    stm.set_motors([motor[0],motor[1],motor[2],motor[3]])
     stm.set_leds(motor[0])
 
     print "angle = " + repr(stm.get_angle())
