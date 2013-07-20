@@ -19,7 +19,7 @@ client.connect()
 
 #main
 while 1:
-    data_string = client.request()
+    data_string = conn.recv(BUFFER_SIZE)
 
     data_list = eval(data_string)
     debug("data_list", data_list)

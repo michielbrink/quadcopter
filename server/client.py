@@ -9,6 +9,5 @@ def connect():
     s.bind((TCP_IP, TCP_PORT))
     s.listen(1)
     conn, addr = s.accept()
+    return conn
 
-def request():
-    return conn.recv(BUFFER_SIZE)
