@@ -19,11 +19,11 @@ motor = [0,0,0,0]
 motor_mode = 0 # 0 = stable # 1 = speed # 2 = debug
 
 #ratio
-forward_ratio = 30
-sideward_ratio = 30
-upward_ratio = 60
-downward_ratio = 60
-forward_hang_ratio = 50
+forward_ratio = 10
+sideward_ratio = 10
+upward_ratio = 10
+downward_ratio = 10
+forward_hang_ratio = 10
 
 
 #connections
@@ -45,15 +45,15 @@ def motorrefresh():
 
     if motor_mode == 0: #stable
 
-        #motor[0] = - (forward_ratio*ly) + (sideward_ratio*lx) + (upward_ratio*rb) - (downward_ratio*lb) /100
-        #motor[1] = - (forward_ratio*ly) - (sideward_ratio*lx) + (upward_ratio*rb) - (downward_ratio*lb) /100
-        #motor[2] = + (forward_ratio*ly) + (sideward_ratio*lx) + (upward_ratio*rb) - (downward_ratio*lb) /100
-        #motor[3] = + (forward_ratio*ly) - (sideward_ratio*lx) + (upward_ratio*rb) - (downward_ratio*lb) /100
+        #motor[0] = - (forward_ratio*ly) + (sideward_ratio*lx) + (upward_ratio*rt) - (downward_ratio*lt) /100
+        #motor[1] = - (forward_ratio*ly) - (sideward_ratio*lx) + (upward_ratio*rt) - (downward_ratio*lt) /100
+        #motor[2] = + (forward_ratio*ly) + (sideward_ratio*lx) + (upward_ratio*rt) - (downward_ratio*lt) /100
+        #motor[3] = + (forward_ratio*ly) - (sideward_ratio*lx) + (upward_ratio*rt) - (downward_ratio*lt) /100
 
-        motor[0] = -(forward_hang_ratio*data_list[1])+(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4])/100
-        motor[1] = -(forward_hang_ratio*data_list[1])-(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4])/100
-        motor[2] = +(forward_hang_ratio*data_list[1])+(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4])/100
-        motor[3] = +(forward_hang_ratio*data_list[1])-(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4])/100
+        motor[0] = (-(forward_hang_ratio*data_list[1])+(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4]))/100
+        motor[1] = (-(forward_hang_ratio*data_list[1])-(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4]))/100
+        motor[2] = (+(forward_hang_ratio*data_list[1])+(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4]))/100
+        motor[3] = (+(forward_hang_ratio*data_list[1])-(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4]))/100
 
     if motor_mode == 1: #fast
 
@@ -69,15 +69,21 @@ def motorrefresh():
 
     if motor_mode == 3: #debug
 
-        #motor[0] = rb
-        #motor[1] = rb
-        #motor[2] = rb
-        #motor[3] = rb
+        #motor[0] = rt
+        #motor[1] = rt
+        #motor[2] = rt
+        #motor[3] = rt
 
         motor[0] = data_list[4]
         motor[1] = data_list[4]
         motor[2] = data_list[4]
         motor[3] = data_list[4]
+
+    for x in xrange(4):
+        if motor[x] < 0:
+            motor[x] = 0
+        if motor[x] > 100:
+            motor[x] = 100
 
     debug("motor", motor)
     stm.set_motors([motor[0],motor[1],motor[2],motor[3]])
@@ -86,11 +92,8 @@ def motorrefresh():
 while 1:
     data_list = [int(i) for i in conn.recv(BUFFER_SIZE).split(',')]
     debug("data_list", data_list)
-
     motorrefresh()
-
     stm.set_leds(motor[0])
-
-    print "angle = " + repr(stm.get_angle())
+    conn.send("angle = " + repr(stm.get_angle()))
 
 conn.close()

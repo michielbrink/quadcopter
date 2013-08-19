@@ -33,7 +33,12 @@ class stm_message:
 # Class to interact with the QuadCopter-STM in a more sane way
 class stm_device:
     def __init__(self):
-        import spidev
+        try:
+            import spidev
+        except ImportError:
+            print "spidev isn't installed"
+            import spidev_emulator as spidev
+
         self.spi = spidev.SpiDev()
         self.spi.open(0,0)
         self.q = []
