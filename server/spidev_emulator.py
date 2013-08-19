@@ -1,0 +1,10 @@
+class SpiDev:
+
+    def open(stupid_var0, stupid_var1, stupid_var2):
+        pass
+
+    def xfer2(data0, data1):
+        return [0x20,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00]
+
+    def __getitem__(data0, data1):
+        pass
