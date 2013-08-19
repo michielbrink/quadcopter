@@ -16,6 +16,15 @@ BUFFER_SIZE = 1024
 
 #assign variables
 motor = [0,0,0,0]
+motor_mode = 0 # 0 = stable # 1 = speed # 2 = debug
+
+#ratio
+forward_ratio = 30
+sideward_ratio = 30
+upward_ratio = 60
+downward_ratio = 60
+forward_hang_ratio = 50
+
 
 #connections
 stm = stm_device()
@@ -33,10 +42,43 @@ def debug( debugvar, debugstring ):
 
 #commands
 def motorrefresh():
-    motor[0] = data_list[4]
-    motor[1] = data_list[4]
-    motor[2] = data_list[4]
-    motor[3] = data_list[4]
+
+    if motor_mode == 0: #stable
+
+        #motor[0] = - (forward_ratio*ly) + (sideward_ratio*lx) + (upward_ratio*rb) - (downward_ratio*lb) /100
+        #motor[1] = - (forward_ratio*ly) - (sideward_ratio*lx) + (upward_ratio*rb) - (downward_ratio*lb) /100
+        #motor[2] = + (forward_ratio*ly) + (sideward_ratio*lx) + (upward_ratio*rb) - (downward_ratio*lb) /100
+        #motor[3] = + (forward_ratio*ly) - (sideward_ratio*lx) + (upward_ratio*rb) - (downward_ratio*lb) /100
+
+        motor[0] = -(forward_hang_ratio*data_list[1])+(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4])/100
+        motor[1] = -(forward_hang_ratio*data_list[1])-(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4])/100
+        motor[2] = +(forward_hang_ratio*data_list[1])+(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4])/100
+        motor[3] = +(forward_hang_ratio*data_list[1])-(sideward_ratio*data_list[0])+(upward_ratio*data_list[5])-(downward_ratio*data_list[4])/100
+
+    if motor_mode == 1: #fast
+
+        #motor[0] = - (forward_ratio*ly) + (sideward_ratio*lx) - (forward_hang_ratio*rt) / 100
+        #motor[1] = - (forward_ratio*ly) - (sideward_ratio*lx) - (forward_hang_ratio*rt) / 100
+        #motor[2] = + (forward_ratio*ly) + (sideward_ratio*lx) + (forward_hang_ratio*rt) / 100
+        #motor[3] = + (forward_ratio*ly) - (sideward_ratio*lx) + (forward_hang_ratio*rt) / 100
+
+        motor[0] = -(forward_hang_ratio*data_list[1])+(sideward_ratio*data_list[0])-(forward_ratio*data_list[5])/100
+        motor[1] = -(forward_hang_ratio*data_list[1])-(sideward_ratio*data_list[0])-(forward_ratio*data_list[5])/100
+        motor[2] = +(forward_hang_ratio*data_list[1])+(sideward_ratio*data_list[0])+(forward_ratio*data_list[5])/100
+        motor[3] = +(forward_hang_ratio*data_list[1])-(sideward_ratio*data_list[0])+(forward_ratio*data_list[5])/100
+
+    if motor_mode == 3: #debug
+
+        #motor[0] = rb
+        #motor[1] = rb
+        #motor[2] = rb
+        #motor[3] = rb
+
+        motor[0] = data_list[4]
+        motor[1] = data_list[4]
+        motor[2] = data_list[4]
+        motor[3] = data_list[4]
+
     debug("motor", motor)
     stm.set_motors([motor[0],motor[1],motor[2],motor[3]])
 
