@@ -2,7 +2,7 @@
 
 import xcontroller, socket, time, string
 
-TCP_IP = 'localhost'
+TCP_IP = '192.168.100.123'
 TCP_PORT = 5555
 BUFFER_SIZE = 1024
 pad1 = xcontroller.get_controller(0)
