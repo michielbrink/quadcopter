@@ -7,7 +7,7 @@ import socket
 from stm import *
 
 #debug
-debug_option = 1
+debug_option = 3
 
 #tcp
 TCP_IP = ''
@@ -24,7 +24,7 @@ sideward_ratio = 10
 upward_ratio = 10
 downward_ratio = 10
 forward_hang_ratio = 10
-
+max_debug_speed_ratio = 40
 
 #connections
 stm = stm_device()
@@ -69,15 +69,15 @@ def motorrefresh():
 
     if motor_mode == 3: #debug
 
-        #motor[0] = rt
-        #motor[1] = rt
-        #motor[2] = rt
-        #motor[3] = rt
+        #motor[0] = rt*max_debug_speed_ratio/100
+        #motor[1] = rt*max_debug_speed_ratio/100
+        #motor[2] = rt*max_debug_speed_ratio/100
+        #motor[3] = rt*max_debug_speed_ratio/100
 
-        motor[0] = data_list[4]
-        motor[1] = data_list[4]
-        motor[2] = data_list[4]
-        motor[3] = data_list[4]
+        motor[0] = data_list[4]*max_debug_speed_ratio/100
+        motor[1] = data_list[4]*max_debug_speed_ratio/100
+        motor[2] = data_list[4]*max_debug_speed_ratio/100
+        motor[3] = data_list[4]*max_debug_speed_ratio/100
 
     for x in xrange(4):
         if motor[x] < 0:

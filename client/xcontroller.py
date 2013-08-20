@@ -11,7 +11,7 @@ atexit.register(proc.kill)
 
 
 
-pygame.init()
+#pygame.init()
 pygame.joystick.init()
 
 #controller  pc	
