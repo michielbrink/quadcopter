@@ -7,7 +7,7 @@ import socket
 from stm import *
 
 #debug
-debug_option = 3
+debug_option = 1
 
 #tcp
 TCP_IP = ''
@@ -16,7 +16,7 @@ BUFFER_SIZE = 1024
 
 #assign variables
 motor = [0,0,0,0]
-motor_mode = 0 # 0 = stable # 1 = speed # 2 = debug
+motor_mode = 3 # 0 = stable # 1 = speed # 2 = debug
 
 #ratio
 forward_ratio = 10
