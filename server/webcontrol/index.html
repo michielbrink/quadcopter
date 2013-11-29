@@ -1,13 +1,22 @@
 <html>
     <body>
-        <input type="range" id="range_fader" min="0" max="100" value="0" step="0.1" onchange="showValue(this.value)" style="width: 300px;" />
-        <input type="text" onchange="showValue(this.value)" id="range_box" value="0"/>
         <script type="text/javascript">
-            function showValue(newValue)
+
+            var fader_stuff = ["motor 1 speed", "motor 2 speed", "motor 3 speed", "motor 4 speed"];
+
+            for (i=0;i<fader_stuff.length;i++)
             {
-                document.getElementById("range_fader").value=newValue;
-                document.getElementById("range_box").value=newValue;
+                 document.write(fader_stuff[i] + " <input type='range' id='range_fader[" + i + "]' min='0' max='100' value='0' step='0.1' style='width: 300px;' onchange='showValue(this.value," + i + ")' /><input type='text' onchange='showValue(this.value," + i + ")' id='range_box[" + i + "]' value='0'/>");
+
             }
+
+            function showValue(newValue,number)
+            {
+                
+                document.getElementById("range_fader[" + number + "]").value=newValue;
+                document.getElementById("range_box[" + number + "]").value=newValue;
+            }
+
         </script>
     </body>
 </html>
