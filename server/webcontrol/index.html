@@ -4,11 +4,18 @@
         <script type="text/javascript">
 
             var faders = ["motor 1 debug speed", "motor 2 debug speed", "motor 3 debug speed", "motor 4 debug speed"];
-            var on_off_buttons = ["led"];
+            var input_boxes = ["altitude"];
+            var on_off_buttons = ["leds"];
 
             for (i=0;i<faders.length;i++)
             {
-                 document.write(faders[i] + " <input type='range' id='range_fader[" + i + "]' min='0' max='100' value='0' step='0.01' style='width: 400px' onchange='showFaderValue(this.value," + i + ")' /><input type='text' style='width: 30px' onchange='showFaderValue(this.value," + i + ")' id='range_box[" + i + "]' value='0'/> <br> ");
+                 document.write(faders[i] + " <input type='range' id='range_fader[" + i + "]' min='0' max='100' value='0' step='0.01' style='width: 400px' onchange='showFaderValue(this.value," + i + ")' /><input type='number' style='width: 55px' onchange='showFaderValue(this.value," + i + ")' id='range_box[" + i + "]' value='0'/> <br> ");
+
+            }
+
+            for (i=0;i<input_boxes.length;i++)
+            {
+                 document.write(input_boxes[i] + " <input type='text' id='input_box[" + i + "]' value='3.553224' readonly/> <br> ");
 
             }
 
