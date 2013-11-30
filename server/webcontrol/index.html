@@ -1,3 +1,4 @@
+<meta http-equiv="content-type" content="text/html; charset=UTF8">
 <html>
     <body>
         <script type="text/javascript">
@@ -13,7 +14,7 @@
 
             for (i=0;i<on_off_buttons.length;i++)
             {
-                 document.write(on_off_buttons[i] + " <input type='button' id='on_off_button[" + i + "]' value='on' onchange='showButtonValue("2'," + i + ")' /> <br> ");
+                 document.write(on_off_buttons[i] + " <input type='button' id='on_off_button[" + i + "]' value='on' onclick='showButtonValue(this.value," + i + ")' /> <br> ");
 
             }
 
@@ -26,8 +27,10 @@
 
             function showButtonValue(newValue,number)
             {
-                document.write("button!!!!!");
-                document.getElementById("on_off_button[" + number + "]").value='off';
+                if (newValue == "on")
+                    document.getElementById("on_off_button[" + number + "]").value='off';
+                if (newValue == "off")
+                    document.getElementById("on_off_button[" + number + "]").value='on';
             }
 
         </script>
