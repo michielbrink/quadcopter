@@ -272,29 +272,6 @@ class _stm_device(threading.Thread):
     def _do_request(self, cmd_code, payload = []):
         self.out_buffer.insert(stm_message(cmd_code, payload))
 
-    def _get_data_vector(self, command_type):
-        self._do_request(command_type)
-        while command_type not in [x[0] for x in self.q]:
-            time.sleep(0.01)
-        # Toch meestal het laatste request, dus probeer die eerst
-        if self.q[-1][0] == command_type:
-            data = self.q.pop()
-        else:
-            for i in range(len(self.q)):
-                if self.q[i][0] == command_type:
-                    data = self.q[i]
-                    del self.q[i]
-                    break
-        return data
-
-    def _get_float_vector(self, command_type):
-        data = self._get_data_vector(command_type)
-        return struct.unpack('<lfff', ''.join([chr(x) for x in data[1:17]]))
-
-    def _get_int_vector(self, command_type):
-        data = self._get_data_vector(command_type)
-        return struct.unpack('<HHHH', ''.join([chr(x) for x in data[1:9]]))
-
     def set_leds(self, b):
         self._do_request(CMD_SET_STM_LEDS, [b])
 
@@ -305,7 +282,6 @@ class _stm_device(threading.Thread):
             self._do_request(CMD_SET_TARGET_ANGLE, data)
         else:
             raise ValueError("3 angles need to be defined")
-            
 
     # Expects, per motor, a percentage of the max
     def set_motors(self, speeds):
