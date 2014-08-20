@@ -1,0 +1,24 @@
+This document describes which pins are used on the STM32-Discovery Board.
+
+SPI communication to the Raspi:
+STM32 - RASPI - Function
+PB12  - 24    - CE
+PB13  - 23    - CLK
+PB14  - 21    - MISO
+PB15  - 19    - MOSI
+GND   - 25    - GND
+
+PWM communication to the 4 ESC:
+STM32 - ESC
+PD3   - ESC1 - Wit
+PD4   - ESC2 - Grijs
+PD6   - ESC3 - Paars
+PD7   - ESC4 - Blauw
+
+Voltage measurements used to check the battery and the motor-currents
+STM32 - Func - Internal name
+PC0   - ESC0 - ADC12_IN6
+PC1   - ESC1 - ADC12_IN7
+PC2   - ESC2 - ADC12_IN8
+PC3   - ESC3 - ADC12_IN9
+PF2   - BAT  - ADC12_IN10
