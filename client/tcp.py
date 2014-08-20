@@ -4,6 +4,7 @@ import socket
 import errno
 import time
 import threading
+import json
 
 class tcp:
     def __init__(self ,TCP_IP ,TCP_PORT ,BUFFER_SIZE):
@@ -26,14 +27,17 @@ class tcp:
     def pingwait(self):
         sleep(1)
 
-    def send(self,MESSAGE):
+    def sendtcp(self,MESSAGE):
         try:
             self.s.send(MESSAGE)
             return self.s.recv(self.BUFFER_SIZE)
         except IOError as e:
             if e.errno == errno.EPIPE:
                 self.s.close()
-                self.tcpconnect()
+                self.tcpconnect()            
+
+#    def send(self):
+#        json.dumps([1,2,3,{'4': 5, '6': 7}], separators=(',',':'))   
 
     def close(self):
         self.s.close()
@@ -46,7 +50,7 @@ if __name__ == "__main__":
 
     while True:
         time.sleep(0.5)
-        connection.send("lalalalalalalallatest")
+        connection.sendtcp("lalalalalalalallatest")
 
 # usefull links
 # https://docs.python.org/2/library/threading.html#timer-objects
