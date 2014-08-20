@@ -38,6 +38,7 @@ class tcp:
     def close(self):
         self.s.close()
 
+#test script
 if __name__ == "__main__":
     import time
 
@@ -47,5 +48,6 @@ if __name__ == "__main__":
         time.sleep(0.5)
         connection.send("lalalalalalalallatest")
 
+# usefull links
 # https://docs.python.org/2/library/threading.html#timer-objects
-#timer: https://docs.python.org/2/library/timeit.html
+# timer: https://docs.python.org/2/library/timeit.html
