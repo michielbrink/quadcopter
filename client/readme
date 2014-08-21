@@ -1,3 +1,11 @@
+installation:
 gui maker: glade-gtk2  (not glade3!)
+pygame (sudo apt-get install python-pygame)
 
-sudo apt-get install python-pygame
+json data:
+
+{"employees":[
+    {"firstName":"John", "lastName":"Doe"},
+    {"firstName":"Anna", "lastName":"Smith"},
+    {"firstName":"Peter", "lastName":"Jones"}
+]}
