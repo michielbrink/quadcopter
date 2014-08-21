@@ -15,7 +15,7 @@ SIZE		= $(TC)-size
 
 ###################################################
 OPENOCD_BOARD_DIR = /usr/local/share/openocd/scripts/board/
-OPENOCD_PROC_FILE = ./extra/stm32f3-openocd.cfg
+OPENOCD_PROC_FILE = ./stm32f3-openocd.cfg
 
 ###################################################
 # Set Sources
