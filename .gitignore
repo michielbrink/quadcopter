@@ -4,6 +4,12 @@
 # C extensions
 *.so
 *.o
+*.elf
+stm32f3.bin
+stm32f3.elf
+stm32f3.map
+tags
+
 
 # Packages
 *.egg
