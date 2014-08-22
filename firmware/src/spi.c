@@ -174,10 +174,11 @@ void startDmaTransfer(void) {
     DMAS.DMA_Priority = DMA_Priority_VeryHigh;
     DMAS.DMA_M2M = DMA_M2M_Disable;
 
-    // rxChannel : if all room is taken, assign a discard-dummy-buffer
+    // rxChannel
     switch ( raspi_state ) {
 	case (SPI_STATE_INITIALIZED):
 	    if ( ((RASPI_MSG_BUF_SIZE - raspi_rx_writep + raspi_rx_readp) % RASPI_MSG_BUF_SIZE) == 1) {
+		// if all room is taken, assign the discard-dummy-buffer
 		DMAS.DMA_MemoryBaseAddr = (uint32_t)&raspi_rx_dummy_buffer;
 		raspi_rx_used_buffer = 0;
 	    } else {
@@ -195,10 +196,11 @@ void startDmaTransfer(void) {
     DMAS.DMA_DIR = DMA_DIR_PeripheralSRC;
     DMA_Init(DMA1_Channel4, &DMAS);
 
-    // txChannel : if the out-queue is empty, send an empty message
+    // txChannel
     switch ( raspi_state ) {
 	case (SPI_STATE_INITIALIZED):
 	    if ( raspi_tx_readp == raspi_tx_writep ) {
+		// if the out-queue is empty, send an empty message
 		DMAS.DMA_MemoryBaseAddr = (uint32_t)&emptyMessage;
 		raspi_tx_used_buffer = 0;
 	    } else {
