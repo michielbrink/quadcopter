@@ -58,7 +58,7 @@
 /* Private variables */
 raspiMessage emptyMessage = {.command = RASPI_CMD_NOP, .payload = { 0 }, .parity = RASPI_CMD_NOP};
 raspiMessage errorMessage = {.command = RASPI_CMD_ERR, .payload = { RASPI_CMD_ERR }, .parity = RASPI_CMD_ERR};
-uint8_t reinitMessage[4] = {:x55, 0x54, 0x53, 0x52 };
+uint8_t reinitMessage[4] = {RASPI_REINIT, 0x54, 0x53, 0x52 };
 
 // This sets up a basic ring-buffer for receiving/transmitting messages
 // Setup as __IO because it's written to in DMA and interrupts
