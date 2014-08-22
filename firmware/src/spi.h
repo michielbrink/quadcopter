@@ -12,7 +12,7 @@
 #ifndef RASPI_MSG_DEFINITIONS
 #define RASPI_MSG_DEFINITIONS
 
-#define RASPI_PAYLOAD_LENGTH 17
+#define RASPI_PAYLOAD_LENGTH 16
 #define RASPI_MSG_BUF_SIZE 16
 
 // These two command-codes should not be used, because they are used to detect wire-problems
