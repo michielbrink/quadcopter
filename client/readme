@@ -1,3 +1,3 @@
+installation:
 gui maker: glade-gtk2  (not glade3!)
-
-sudo apt-get install python-pygame
+pygame (sudo apt-get install python-pygame)
