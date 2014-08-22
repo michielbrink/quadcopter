@@ -74,8 +74,7 @@ __IO uint8_t raspi_rx_used_buffer = 0;
 __IO uint8_t raspi_tx_used_buffer = 0;
 __IO uint8_t raspi_working_comms = 1;
 
-__IO uint8_t raspi_reinitializing = 0;
-__IO uint8_t raspi_initialized = 0;
+__IO uint8_t raspi_state = SPI_STATE_UNINITIALIZED;
 
 NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -140,6 +139,8 @@ void raspiComInit() {
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
+  raspi_state = SPI_STATE_UNINITIALIZED;
+
   /* Start the first DMA-transfer, which keeps the comms nicely looping */
   startDmaTransfer();
 }
@@ -174,32 +175,42 @@ void startDmaTransfer(void) {
     DMAS.DMA_M2M = DMA_M2M_Disable;
 
     // rxChannel : if all room is taken, assign a discard-dummy-buffer
-    if ( raspi_initialized == 0) {
-	DMAS.DMA_MemoryBaseAddr = (uint32_t)&(raspi_rx_dummy_buffer);
-	raspi_rx_used_buffer = 0;
-	DMAS.DMA_BufferSize = 1;
-    } else if ( ((RASPI_MSG_BUF_SIZE - raspi_rx_writep + raspi_rx_readp) % RASPI_MSG_BUF_SIZE) == 1) {
-	DMAS.DMA_MemoryBaseAddr = (uint32_t)&raspi_rx_dummy_buffer;
-	raspi_rx_used_buffer = 0;
-	DMAS.DMA_BufferSize = RASPI_PAYLOAD_LENGTH + 2;
-    } else {
-	DMAS.DMA_MemoryBaseAddr = (uint32_t)&(raspi_rx_buffer[raspi_rx_writep]);
-	raspi_rx_used_buffer = 1;
-	DMAS.DMA_BufferSize = RASPI_PAYLOAD_LENGTH + 2;
+    switch ( raspi_state ) {
+	case (SPI_STATE_INITIALIZED):
+	    if ( ((RASPI_MSG_BUF_SIZE - raspi_rx_writep + raspi_rx_readp) % RASPI_MSG_BUF_SIZE) == 1) {
+		DMAS.DMA_MemoryBaseAddr = (uint32_t)&raspi_rx_dummy_buffer;
+		raspi_rx_used_buffer = 0;
+	    } else {
+		DMAS.DMA_MemoryBaseAddr = (uint32_t)&(raspi_rx_buffer[raspi_rx_writep]);
+		raspi_rx_used_buffer = 1;
+	    }
+	    DMAS.DMA_BufferSize = RASPI_PAYLOAD_LENGTH + 2;
+	    break;
+	case (SPI_STATE_INITIALIZING):
+	case (SPI_STATE_UNINITIALIZED):
+	    DMAS.DMA_MemoryBaseAddr = (uint32_t)&(raspi_rx_dummy_buffer);
+	    DMAS.DMA_BufferSize = 1;
+	    break;
     }
     DMAS.DMA_DIR = DMA_DIR_PeripheralSRC;
     DMA_Init(DMA1_Channel4, &DMAS);
 
     // txChannel : if the out-queue is empty, send an empty message
-    if ( raspi_initialized == 0 ) {
-	DMAS.DMA_MemoryBaseAddr = (uint32_t)&reinitMessage;
-	raspi_tx_used_buffer = 0;
-    } else if ( raspi_tx_readp == raspi_tx_writep ) {
-	DMAS.DMA_MemoryBaseAddr = (uint32_t)&emptyMessage;
-	raspi_tx_used_buffer = 0;
-    } else {
-	DMAS.DMA_MemoryBaseAddr = (uint32_t)&(raspi_tx_buffer[raspi_tx_readp]);
-	raspi_tx_used_buffer = 1;
+    switch ( raspi_state ) {
+	case (SPI_STATE_INITIALIZED):
+	    if ( raspi_tx_readp == raspi_tx_writep ) {
+		DMAS.DMA_MemoryBaseAddr = (uint32_t)&emptyMessage;
+		raspi_tx_used_buffer = 0;
+	    } else {
+		DMAS.DMA_MemoryBaseAddr = (uint32_t)&(raspi_tx_buffer[raspi_tx_readp]);
+		raspi_tx_used_buffer = 1;
+	    }
+	    break;
+	case (SPI_STATE_INITIALIZING):
+	case (SPI_STATE_UNINITIALIZED):
+	    DMAS.DMA_MemoryBaseAddr = (uint32_t)&reinitMessage;
+	    raspi_tx_used_buffer = 0;
+	    break;
     }
     DMAS.DMA_DIR = DMA_DIR_PeripheralDST;
     DMA_Init(DMA1_Channel5, &DMAS);
@@ -222,7 +233,6 @@ inline uint8_t checkParity(__IO raspiMessage *msg) {
     for (i=0; i<RASPI_PAYLOAD_LENGTH; i++) {
 	par ^= msg->payload[i];
     }
-    return 0;
     return ( par == msg->parity);
 }
 
@@ -240,35 +250,59 @@ void endDmaTransfer(void) {
     DMA_Cmd(DMA1_Channel5, DISABLE);
     SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Rx | SPI_I2S_DMAReq_Tx, DISABLE);
 
-    if (raspi_initialized) {
-	if (raspi_rx_used_buffer) {
-	    if ( checkParity( &(raspi_rx_buffer[raspi_rx_writep]) ) ) {
-		if (!(raspi_rx_buffer[raspi_rx_writep].command == RASPI_CMD_NOP)) {
-		    raspi_rx_writep = (raspi_rx_writep + 1) % RASPI_MSG_BUF_SIZE;
-		    raspi_rx_num_messages = (RASPI_MSG_BUF_SIZE - raspi_rx_readp + raspi_rx_writep)%RASPI_MSG_BUF_SIZE;
-		}
-		raspi_initialized = 1;
-	    } else {
-		// parity-error, reinitialization needed
-		raspi_initialized = 0;
-		raspi_reinitializing = 0;
+    switch ( raspi_state ) {
+	case (SPI_STATE_UNINITIALIZED):
+	    if ( raspi_rx_dummy_buffer.command == RASPI_REINIT ) {
+		raspi_state = SPI_STATE_INITIALIZING;
 	    }
-	}
-	if (raspi_tx_used_buffer && raspi_initialized) {
-	    raspi_tx_readp = (raspi_tx_readp + 1) % RASPI_MSG_BUF_SIZE;
-	    raspi_tx_num_messages = (RASPI_MSG_BUF_SIZE - raspi_tx_readp + raspi_tx_writep)%RASPI_MSG_BUF_SIZE;
-	}
-    } else if ( raspi_reinitializing ) {
-	if (raspi_rx_dummy_buffer.command == RASPI_CMD_START) {
-	    raspi_initialized = 1;
-	    raspi_reinitializing = 0;
-	} else if (raspi_rx_dummy_buffer.command != RASPI_REINIT) {
-	    raspi_reinitializing = 0;
-	}
-    } else {
-	if (raspi_rx_dummy_buffer.command == RASPI_REINIT) {
-	    raspi_reinitializing = 1;
-	}
+	    break;
+	case (SPI_STATE_INITIALIZING):
+	    switch ( raspi_rx_dummy_buffer.command ) {
+		case (RASPI_CMD_START):
+		    raspi_state = SPI_STATE_INITIALIZED;
+		    break;
+		case (RASPI_REINIT):
+		    break;
+		default:
+		    raspi_state = SPI_STATE_UNINITIALIZED;
+		    break;
+	    }
+	    break;
+	case (SPI_STATE_INITIALIZED):
+	    if (raspi_rx_used_buffer) {
+		if ( checkParity( &(raspi_rx_buffer[raspi_rx_writep]) ) ) {
+		    switch ( raspi_rx_buffer[raspi_rx_writep].command ) {
+			case (RASPI_CMD_NOP):
+			    break;
+			case (RASPI_CMD_WIRE_SHORTED):
+			case (RASPI_CMD_WIRE_BROKEN):
+			case (RASPI_REINIT):
+			case (RASPI_CMD_START):
+			    raspi_state = SPI_STATE_UNINITIALIZED;
+			    break;
+			default:
+			    raspi_rx_writep = (raspi_rx_writep + 1) % RASPI_MSG_BUF_SIZE;
+			    raspi_rx_num_messages = (RASPI_MSG_BUF_SIZE - raspi_rx_readp + raspi_rx_writep)%RASPI_MSG_BUF_SIZE;
+			    break;
+		    }
+		} else {
+		    // parity-error, reinitialization needed
+		    raspi_state = SPI_STATE_UNINITIALIZED;
+		}
+	    } else {
+		if ( checkParity( &emptyMessage ) ) {
+		    raspi_state = SPI_STATE_UNINITIALIZED;
+		    switch ( raspi_rx_buffer[raspi_rx_writep].command ) {
+			case (RASPI_CMD_WIRE_SHORTED):
+			case (RASPI_CMD_WIRE_BROKEN):
+			case (RASPI_REINIT):
+			case (RASPI_CMD_START):
+			    raspi_state = SPI_STATE_UNINITIALIZED;
+			    break;
+		    }
+		}
+	    }
+	    break;
     }
 }
 
