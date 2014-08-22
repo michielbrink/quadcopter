@@ -15,6 +15,10 @@
 #define RASPI_PAYLOAD_LENGTH 17
 #define RASPI_MSG_BUF_SIZE 16
 
+// These two command-codes should not be used, because they are used to detect wire-problems
+#define RASPI_CMD_WIRE_SHORTED 0x00
+#define RASPI_CMD_WIRE_BROKEN  0xFF
+
 #define RASPI_CMD_NOP 0x01
 #define RASPI_CMD_SET_MOTORS 0x02
 #define RASPI_CMD_GET_MOTORS 0x04
@@ -42,6 +46,10 @@
 #define RASPI_CMD_ERR 0xFC
 #define RASPI_CMD_STOP 0xFD
 #define RASPI_CMD_START 0xFE
+
+#define SPI_STATE_UNINITIALIZED 0x01
+#define SPI_STATE_INITIALIZING  0x02
+#define SPI_STATE_INITIALIZED   0x03
 
 #endif
 
