@@ -20,6 +20,12 @@
 #define CONTROL_D 0.05
 #define CONTROL_MAX_I 0.8
 
+// The PID-values for the PID-control
+#define CONTROL_RATE_P 0.1
+#define CONTROL_RATE_I 0.01
+#define CONTROL_RATE_D 0.005
+#define CONTROL_RATE_MAX_I 0.08
+
 // Q diagonal 3x3 with these elements on diagonal
 #define Q1 5.0f
 #define Q2 100.0f

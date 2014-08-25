@@ -35,6 +35,8 @@ kalman_data kal_roll, kal_pitch;
 
 PID_state PID_pitch = {.P = CONTROL_P, .D = CONTROL_D, .I = CONTROL_I, .err = 0.0, .dx = 0.0 , .int_I = 0.0, .max_I = CONTROL_MAX_I, .min_I = -CONTROL_MAX_I};
 PID_state PID_roll =  {.P = CONTROL_P, .D = CONTROL_D, .I = CONTROL_I, .err = 0.0, .dx = 0.0 , .int_I = 0.0, .max_I = CONTROL_MAX_I, .min_I = -CONTROL_MAX_I};
+PID_state PID_pitch_rate = {.P = CONTROL_RATE_P, .D = CONTROL_RATE_D, .I = CONTROL_RATE_I, .err = 0.0, .dx = 0.0 , .int_I = 0.0, .max_I = CONTROL_RATE_MAX_I, .min_I = -CONTROL_RATE_MAX_I};
+PID_state PID_roll_rate =  {.P = CONTROL_RATE_P, .D = CONTROL_RATE_D, .I = CONTROL_RATE_I, .err = 0.0, .dx = 0.0 , .int_I = 0.0, .max_I = CONTROL_RATE_MAX_I, .min_I = -CONTROL_RATE_MAX_I};
 
 // Measurements to be injected in the controller
 void insert_acc_value(fVector3* acc_val) {
@@ -129,8 +131,6 @@ inline int signum(int var) {
 // max_power -> pitch -> roll -> yaw
 void calculate_motor_power(uint16_t *speeds, float32_t Lx, float32_t Ly, float32_t Lz) {
     float32_t m1, m2, m3, m4;
-    float32_t min_m = -0.45; // Gives a little margin compared to 0.0
-    float32_t max_m = (float32_t) (MAX_SERVO_TIME - MIN_SERVO_TIME);
     float32_t F = (float32_t) power_target;
 
     // Calc PITCH-axis
@@ -169,8 +169,8 @@ void calculate_motor_power(uint16_t *speeds, float32_t Lx, float32_t Ly, float32
 
 uint8_t update_motor_settings(uint16_t *speeds) {
     float32_t dt, current_time, z1, z2;
-    float32_t pitch_err, pitch_torque;
-    float32_t roll_err, roll_torque;
+    float32_t pitch_err, pitch_torque, pitch_rate_target, pitch_rate_error;
+    float32_t roll_err, roll_torque, roll_rate_target, roll_rate_error;
 
     // printf("%i / %i \n", time_since_startup, time_last_control_update);
     if (!kalman_initialized && (acc_n > KALMAN_NUM_INIT_MEASUREMENTS)) {
@@ -205,8 +205,10 @@ uint8_t update_motor_settings(uint16_t *speeds) {
 #ifndef LOCAL_TEST_ENVIRONMENT
         LedAngle(kal_pitch.x1 * DEGREES_PER_RAD * 10);
 #endif
-        pitch_err = kal_pitch.x1 - angle_target.y;
-        pitch_torque = do_pid(&PID_pitch, pitch_err, dt);
+        pitch_err         = kal_pitch.x1 - angle_target.x;
+	pitch_rate_target = do_pid(&PID_pitch, pitch_err, dt);
+	pitch_rate_error  = kal_pitch.x2 - pitch_rate_target;
+	pitch_torque      = do_pid(&PID_pitch_rate, pitch_rate_error, dt);
 
 #ifdef LOCAL_TEST_ENVIRONMENT
         if (fp_out)
@@ -224,8 +226,10 @@ uint8_t update_motor_settings(uint16_t *speeds) {
         z1 = atan2(acc_zk.x, acc_zk.z);
         z2 = gyro_zk.x*RADS_PER_DEGREE;
         kalman_innovate(&kal_roll, z1, z2, dt);
-        roll_err    = kal_roll.x1 - angle_target.x;
-        roll_torque = do_pid(&PID_roll, roll_err, dt);
+        roll_err         = kal_roll.x1 - angle_target.x;
+	roll_rate_target = do_pid(&PID_roll, roll_err, dt);
+	roll_rate_error  = kal_roll.x2 - roll_rate_target;
+	roll_torque      = do_pid(&PID_roll_rate, roll_rate_error, dt);
 
         calculate_motor_power(&(speeds[0]), pitch_torque, roll_torque, 0.0);
 #ifdef LOCAL_TEST_ENVIRONMENT
