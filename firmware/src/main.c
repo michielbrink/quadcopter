@@ -132,7 +132,7 @@ int main(void)
 		  raspiSendMessage(&send);
 		  break;
 	      case (RASPI_CMD_SET_STM_LEDS):
-		  // LedByte(recv.payload[0]);
+		  LedByte(recv.payload[0]);
 		  raspiSendMessage(&recv);
 		  break;
 
