@@ -8,8 +8,9 @@
 stm32f3.bin
 stm32f3.elf
 stm32f3.map
+stm32f30_flash.ld
 tags
-
+programmed.tag
 
 # Packages
 *.egg
@@ -41,6 +42,7 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+.*.swp
 
 #gedit log
 *~
