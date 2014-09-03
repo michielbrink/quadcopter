@@ -1,12 +1,12 @@
 This document describes which pins are used on the STM32-Discovery Board.
 
 SPI communication to the Raspi:
-STM32 - RASPI - Function
-PB12  - 24    - CE
-PB13  - 23    - CLK
-PB14  - 21    - MISO
-PB15  - 19    - MOSI
-GND   - 25    - GND
+STM32 - RASPI - Function - Logic
+PB12  - 24    - CE       - paars
+PB13  - 23    - CLK      - blauw
+PB14  - 21    - MISO     - groen
+PB15  - 19    - MOSI     - geel
+GND   - 25    - GND      - grijs
 
 PWM communication to the 4 ESC:
 STM32 - ESC
