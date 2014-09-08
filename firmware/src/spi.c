@@ -304,6 +304,11 @@ void endDmaTransfer(void) {
 		    }
 		}
 	    }
+	    // Update the tx-pointer when a message was send and a correct message was received
+	    if ((raspi_state == SPI_STATE_INITIALIZED) && raspi_tx_used_buffer) {
+		raspi_tx_readp = (raspi_tx_readp + 1) % RASPI_MSG_BUF_SIZE;
+		raspi_tx_num_messages = (RASPI_MSG_BUF_SIZE - raspi_tx_readp + raspi_tx_writep)%RASPI_MSG_BUF_SIZE;
+	    }
 	    break;
     }
 }
